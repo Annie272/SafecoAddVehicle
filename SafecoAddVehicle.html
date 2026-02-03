@@ -796,6 +796,7 @@
             <option value="Yukon Territory">Yukon Territory</option>
             <option value="District of Columbia">District of Columbia</option>
             <option value="Nunavut">Nunavut</option>
+            
           </select>
         </div>
 
@@ -821,32 +822,19 @@
 
      <!-- Hidden Salesforce fields -->
       <input type="hidden" name="oid" value="00DU7000006EuID" />
-      <input
-        type="hidden"
-        name="retURL"
-        value="https://bennettandporter.com/"
-      />
-      <input
-        type="hidden"
-        name="first_name"
-        value="Add Vehicle"
-      />
+      <input type="hidden" name="retURL" value="https://bennettandporter.com/" />
+      <input type="hidden" name="first_name" value="Add Vehicle" />
       <input type="hidden" name="last_name" value="Safeco" />
       <input type="hidden" name="status" value="New" />
       <input type="hidden" name="phone" value="2143789129" />
       <input type="hidden" name="lead_source" value="Web Form" />
       <input type="hidden" name="delete_Action_Form__c" value="1" />
       <input type="hidden" id="00NU7000007OdKL" name="Carrier__c" value="Safeco" />
-      <input
-        type="hidden"
-        name="company"
-        value="Safeco Add Vehicle"
-      />
-      
-    <input type="hidden" id="FormCapturedData" name="FormCapturedData">
-    <input type="hidden" id="FormMissingData" name="FormMissingData">
-    
-     <div class="flex justify-end mt-6">
+      <input type="hidden" name="company" value="Safeco Add Vehicle" />
+      <input type="hidden" id="FormCapturedData" name="Form_Captured_Data__c" />
+      <input type="hidden" id="FormMissingData" name="Form_Missing_Data__c" />
+
+      <div class="flex justify-end mt-6">
       <button type="button" id="reviewBtn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl hover:bg-blue-700 transition">Review and Submit</button>
       </div>
     </form>
@@ -1099,8 +1087,8 @@ toggleAdditionalInterestSection();  // Initial state
             missing.push('Years Vehicle Owned');
         }
 
-        capturedField.value = captured.join('; ');
-        missingField.value = missing.join('; ');
+      capturedField.value = captured.join('\n');
+      missingField.value = missing.join('\n');
         return missing;
     }
 
