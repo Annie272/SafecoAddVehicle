@@ -853,29 +853,21 @@
    <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // FIXED Pikaday datepicker - MMDDYYYY format (no slashes)
-    new Pikaday({
-        field: document.getElementById('00NU7000005zuLl'),
-        format: 'MMDDYYYY',
-        toString: function(date) {
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return month + day + year; // Returns MMDDYYYY
-        },
-        parse: function(dateString) {
-            if (!dateString || dateString.length !== 8) return null;
-            const month = parseInt(dateString.slice(0, 2)) - 1;
-            const day = parseInt(dateString.slice(2, 4));
-            const year = parseInt(dateString.slice(4, 8));
-            const date = new Date(year, month, day);
-            // Validate parsed date is valid
-            if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
-                return null;
-            }
-            return date;
-        }
-    });
+      // ===== Pikaday Datepicker (MM/DD/YYYY) =====
+  new Pikaday({
+  field: document.getElementById("00NU7000005zuLl"), // Add Vehicle Effective Date field ID
+  format: "MM/DD/YYYY",
+  toString(date) {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  },
+  parse(dateString) {
+    const [month, day, year] = dateString.split("/");
+    return new Date(year, month - 1, day);
+  },
+});
 
     // Map request type radios to hidden field
     const quoteRadio = document.getElementById('requestTypeQuote');
@@ -927,7 +919,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: 'email', label: 'Email', type: 'email' },
         { id: '00NU7000006IOzh', label: 'Select the Request Type' },
         { id: '00NU7000005zuX3', label: 'Policy Number' },
-        { id: '00NU7000005zuLl', label: 'Effective Date MMDDYYYY', type: 'date' },
+        { id: '00NU7000005zuLl', label: 'Effective Date (MM/DD/YYYY)', type: 'date' },
         { radioGroupName: 'Do_you_know_the_VIN_of_this_vehicle__c', label: 'Do you know the VIN of the New Vehicle?' },
         { id: '00NU7000006Knh3', label: 'VIN Number of New Vehicle' },
         { id: '00NU7000006N0iD', label: 'Is the vehicle used to commute to work/school?' },
@@ -1007,22 +999,6 @@ toggleAdditionalInterestSection();  // Initial state
             if (el) el.classList.remove('error-highlight');
         });
     }
-
-    // ✅ Date validation MMDDYYYY (8 digits)
-    function isValidMMDDYYYY(dateStr) {
-        if (!dateStr || dateStr.length !== 8) return false;
-        const month = parseInt(dateStr.slice(0, 2));
-        const day = parseInt(dateStr.slice(2, 4));
-        const year = parseInt(dateStr.slice(4, 8));
-        
-        if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > 2100) {
-            return false;
-        }
-        
-        const date = new Date(year, month - 1, day);
-        return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
-    }
-
     // Standard required field validation + capture missing/captured
     function validateFields() {
         const missing = [];
@@ -1057,11 +1033,11 @@ toggleAdditionalInterestSection();  // Initial state
                         return;
                     }
                 } else if (fieldConfig.type === 'date') {
-                    if (!isValidMMDDYYYY(val)) {
-                        missing.push(`${fieldConfig.label}: Invalid MMDDYYYY format`);
-                        return;
+                  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+                       missing.push(`Valid Effective Date (MM/DD/YYYY)`);
+                       return;
+                      }
                     }
-                }
                 captured.push(`${fieldConfig.label}: ${val}`);
             }
         }
@@ -1215,8 +1191,6 @@ toggleAdditionalInterestSection();  // Initial state
             closeDialog();
         }
     });
-
- 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
     });
